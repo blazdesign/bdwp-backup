@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# WordPress installation directory
-DIR=sandbox.blazdesign.com
-
-# Dropbox folder to put files
-DROPBOX_DIR=bd-sandbox
-
+# Load config file
+source config.sh
 
 
 echo -e "Starting backup...\n"
@@ -64,8 +60,8 @@ cat ~/bdwp-backup/tmp/output.html | mail \
 -a "From: noreply@blazdesign.com" \
 -a "MIME-Version: 1.0" \
 -a "Content-Type: text/html" \
--s "Automated Backup" \
-coreyblaz@gmail.com
+-s "$DIR Backup" \
+$EMAIL_ADDRESS
 
 #echo -e "Removing files...\n"
 rm ~/bdwp-backup/tmp/*
