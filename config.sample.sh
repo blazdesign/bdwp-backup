@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
 # WordPress installation directory
-DIR="your.wordpressinstall.com"
+DIR=""
 
-# Dropbox folder to put files
-DROPBOX_DIR="wordpress-install-backup"
+# FTP folder to put files
+FTP_DIR=""
 
 # Email address to report to
-EMAIL_ADDRESS="your@emailaddress.com"
+EMAIL_ADDRESS=""
+
+# FTP Username
+FTP_SERVER=""
+FTP_USERNAME=""
+FTP_PASSWORD=""
