@@ -43,7 +43,7 @@ DB_UPLOAD_START=$(date +%s)
 ftp -inv $FTP_SERVER <<EOF
 user $FTP_USERNAME $FTP_PASSWORD
 binary
-mkdir /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")
+mkdir /$FTP_DIR/$(date -d today "+%m-%d-%Y")
 put ~/bdwp-backup/tmp/$DATABASE_FILENAME /$FTP_DIR/$(date -d today "+%m-%d-%Y")/$DATABASE_FILENAME
 put ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME /$FTP_DIR/$(date -d today "+%m-%d-%Y")/$FILE_BACKUP_FILENAME
 quit
