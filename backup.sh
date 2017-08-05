@@ -39,21 +39,29 @@ echo -e "File Backup Size: $FILE_BACKUP_SIZE \n"
 
 echo -e "Uploading to Dropbox...\n"
 DB_UPLOAD_START=$(date +%s)
-./dropbox_uploader.sh upload ~/bdwp-backup/tmp/$DATABASE_FILENAME /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")/$DATABASE_FILENAME
+#./dropbox_uploader.sh upload ~/bdwp-backup/tmp/$DATABASE_FILENAME /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")/$DATABASE_FILENAME
+ftp -inv $FTP_SERVER <<EOF
+user $FTP_USERNAME $FTP_PASSWORD
+binary
+mkdir /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")
+put ~/bdwp-backup/tmp/$DATABASE_FILENAME /$FTP_DIR/$(date -d today "+%m-%d-%Y")/$DATABASE_FILENAME
+put ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME /$FTP_DIR/$(date -d today "+%m-%d-%Y")/$FILE_BACKUP_FILENAME
+quit
+EOF
 DB_UPLOAD_END=$(date +%s)
-echo -e "DB Upload Time: $(($DB_UPLOAD_END - $DB_UPLOAD_START))s\n"
+echo -e "Upload Time: $(($DB_UPLOAD_END - $DB_UPLOAD_START))s\n"
 
 FILE_UPLOAD_START=$(date +%s)
-./dropbox_uploader.sh upload ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")/$FILE_BACKUP_FILENAME
-FILE_UPLOAD_END=$(date +%s)
-echo -e "DB Upload Time: $(($FILE_UPLOAD_END - $FILE_UPLOAD_START))s\n"
+#./dropbox_uploader.sh upload ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")/$FILE_BACKUP_FILENAME
+#FILE_UPLOAD_END=$(date +%s)
+#echo -e "DB Upload Time: $(($FILE_UPLOAD_END - $FILE_UPLOAD_START))s\n"
 
 END_TIME=$(date +%s)
 
 echo -e "Backup Complete!\n"
 
 #Generate email 
-./make-email.sh $DROPBOX_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
+./make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
 
 #Send email
 cat ~/bdwp-backup/tmp/output.html | mail \
