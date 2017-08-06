@@ -1,7 +1,29 @@
 #!/bin/bash
 
-# Load config file
-source config.sh
+#############################################
+#             Config
+#############################################
+
+# WordPress installation directory
+WP_DIR="/home/blazdesign/blazdesign.com"
+
+# Backup name
+DIR="blazdesign.com"
+
+# FTP folder to put files
+FTP_DIR="blazdesign"
+
+# Email address to report to
+EMAIL_ADDRESS="corey@blazdesign.com"
+# Email report?
+EMAIL_REPORT="FALSE"
+
+# FTP  Info
+FTP_SERVER="blaz.tech"
+FTP_USERNAME="wpbackup"
+FTP_PASSWORD="asdf1234!"
+
+#############################################
 
 
 echo -e "Starting backup...\n"
@@ -11,7 +33,7 @@ echo -e "Exporting database...\n"
 
 DB_BACKUP_START=$(date +%s)
 DATABASE_FILENAME=$DIR.sql
-wp db export --add-drop-table --path=../$DIR $DATABASE_FILENAME
+wp db export --add-drop-table --path=$WP_DIR $DATABASE_FILENAME
 mv $DATABASE_FILENAME ~/bdwp-backup/tmp/
 DATABASE_BACKUP_SIZE=`du -h ~/bdwp-backup/tmp/$DATABASE_FILENAME | cut -f1`
 DB_BACKUP_END=$(date +%s)
@@ -30,14 +52,14 @@ FILE_BACKUP_FILENAME=$DIR.$(date -d today "+%m-%d-%Y").tar.gz
 #tar cvzf ~/bdwp-backup/tmp/$BACKUP_FILENAME ~/$DIR/wp-content/
 
 #Straight up tar command
-tar czf ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME ~/$DIR/wp-content/
+tar czf ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME $WP_DIR/wp-content/
 FILE_BACKUP_SIZE=`du -h ~/bdwp-backup/tmp/$FILE_BACKUP_FILENAME | cut -f1`
 FILE_BACKUP_END=$(date +%s)
 
 echo -e "File Backup Time: $(($FILE_BACKUP_END - $FILE_BACKUP_START))s\n"
 echo -e "File Backup Size: $FILE_BACKUP_SIZE \n"
 
-echo -e "Uploading to Dropbox...\n"
+echo -e "Uploading to FTP...\n"
 DB_UPLOAD_START=$(date +%s)
 #./dropbox_uploader.sh upload ~/bdwp-backup/tmp/$DATABASE_FILENAME /$DROPBOX_DIR/$(date -d today "+%m-%d-%Y")/$DATABASE_FILENAME
 ftp -inv $FTP_SERVER <<EOF
@@ -60,16 +82,18 @@ END_TIME=$(date +%s)
 
 echo -e "Backup Complete!\n"
 
-#Generate email 
-./make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
+if [$EMAIL_REPORT="TRUE"]
+	#Generate email 
+	~/bdwp-backup/make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
 
-#Send email
-cat ~/bdwp-backup/tmp/output.html | mail \
--a "From: noreply@blazdesign.com" \
--a "MIME-Version: 1.0" \
--a "Content-Type: text/html" \
--s "$DIR Backup" \
-$EMAIL_ADDRESS
+	#Send email
+	cat ~/bdwp-backup/tmp/output.html | mail \
+	-a "From: noreply@blazdesign.com" \
+	-a "MIME-Version: 1.0" \
+	-a "Content-Type: text/html" \
+	-s "$DIR Backup" \
+	$EMAIL_ADDRESS
+fi
 
 #echo -e "Removing files...\n"
 rm ~/bdwp-backup/tmp/*
