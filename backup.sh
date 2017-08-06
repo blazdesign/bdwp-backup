@@ -59,7 +59,7 @@ END_TIME=$(date +%s)
 
 echo -e "Backup Complete!\n"
 
-if [$EMAIL_REPORT="TRUE"]
+if [$EMAIL_REPORT="TRUE"]; then
 	#Generate email 
 	~/bdwp-backup/make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
 
