@@ -59,17 +59,18 @@ END_TIME=$(date +%s)
 
 echo -e "Backup Complete!\n"
 
-if [$EMAIL_REPORT="TRUE"]; then
-	#Generate email 
-	~/bdwp-backup/make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_BACKUP_FILENAME $FILE_BACKUP_SIZE > ~/bdwp-backup/tmp/output.html
-
-	#Send email
-	cat ~/bdwp-backup/tmp/output.html | mail \
-	-a "From: noreply@blazdesign.com" \
-	-a "MIME-Version: 1.0" \
-	-a "Content-Type: text/html" \
-	-s "$DIR Backup" \
-	$EMAIL_ADDRESS
+if [ "$EMAIL_REPORT" = true ]; then
+        #Generate email
+        ~/bdwp-backup/make-email.sh $FTP_DIR $DIR $DATABASE_FILENAME $DATABASE_BACKUP_SIZE $FILE_B$
+        #Send email
+        cat ~/bdwp-backup/tmp/output.html | mail \
+        -a "From: noreply@blazdesign.com" \
+        -a "MIME-Version: 1.0" \
+        -a "Content-Type: text/html" \
+        -s "$DIR Backup" \
+        $EMAIL_ADDRESS
+else
+        echo -e "Skipping email report..."
 fi
 
 #echo -e "Removing files...\n"
