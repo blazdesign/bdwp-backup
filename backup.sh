@@ -1,30 +1,7 @@
 #!/bin/bash
 
-#############################################
-#             Config
-#############################################
-
-# WordPress installation directory
-WP_DIR="/home/blazdesign/blazdesign.com"
-
-# Backup name
-DIR="blazdesign.com"
-
-# FTP folder to put files
-FTP_DIR="blazdesign"
-
-# Email address to report to
-EMAIL_ADDRESS="corey@blazdesign.com"
-# Email report?
-EMAIL_REPORT="FALSE"
-
-# FTP  Info
-FTP_SERVER="blaz.tech"
-FTP_USERNAME="wpbackup"
-FTP_PASSWORD="asdf1234!"
-
-#############################################
-
+# Load config file
+source config.sh
 
 echo -e "Starting backup...\n"
 START_TIME=$(date +%s)
