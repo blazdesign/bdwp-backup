@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load config file
-source config.sh
+source ~/bdwp-backup/config.sh
 
 echo -e "Starting backup...\n"
 START_TIME=$(date +%s)
